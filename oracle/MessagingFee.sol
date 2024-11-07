@@ -8,14 +8,12 @@ abstract contract MessagingFee is IMessagingFeeInterface {
 
     mapping(bytes32 jobId => IMessagingFeeInterface.MessagingFee)
         public messagingFees;
-    uint256 public EXPIRYTIME = 15 minutes;
+    uint256 public EXPIRYTIME;
 
     /**
      *  @dev See {IMessagingFeeInterface-setExpirytime}.
      */
-    function setExpirytime(
-        uint256 secs
-    ) public override authorizedFeeSetterSetter {
+    function setExpirytime(uint256 secs) public override authorizedFeeSetter {
         require(secs > 0, "Non zero");
         uint256 before = EXPIRYTIME;
         EXPIRYTIME = secs;
@@ -103,4 +101,7 @@ abstract contract MessagingFee is IMessagingFeeInterface {
         require(feeSetters[msg.sender], "Non authorized fee setter");
         _;
     }
+
+    // @notice receives funds
+    receive() external payable {}
 }
