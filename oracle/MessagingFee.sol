@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IMessagingFeeInterface.sol";
+import "../interfaces/IMessagingFee.sol";
 
-abstract contract MessagingFee is IMessagingFeeInterface {
+abstract contract MessagingFee is IMessagingFee {
     mapping(address setter => bool authorized) private feeSetters;
 
-    mapping(bytes32 jobId => IMessagingFeeInterface.MessagingFee)
+    mapping(bytes32 jobId => IMessagingFee.MessagingFee)
         public messagingFees;
     uint256 public EXPIRYTIME;
 
     /**
-     *  @dev See {IMessagingFeeInterface-setExpirytime}.
+     *  @dev See {IMessagingFee-setExpirytime}.
      */
     function setExpirytime(uint256 secs) public override authorizedFeeSetter {
         require(secs > 0, "Non zero");
@@ -20,7 +20,7 @@ abstract contract MessagingFee is IMessagingFeeInterface {
         emit ExpirytimeChanged(before, EXPIRYTIME);
     }
     /**
-     *  @dev See {IMessagingFeeInterface-setFeeSetter}.
+     *  @dev See {IMessagingFee-setFeeSetter}.
      */
     function setFeeSetter(
         address setter,
@@ -33,7 +33,7 @@ abstract contract MessagingFee is IMessagingFeeInterface {
     }
 
     /**
-     *  @dev See {IMessagingFeeInterface-isAuthorizedFeeSetter}.
+     *  @dev See {IMessagingFee-isAuthorizedFeeSetter}.
      */
     function isAuthorizedFeeSetter(
         address setter
@@ -42,24 +42,21 @@ abstract contract MessagingFee is IMessagingFeeInterface {
     }
 
     /**
-     *  @dev See {IMessagingFeeInterface-setMessagingFees}.
+     *  @dev See {IMessagingFee-setMessagingFees}.
      */
     function setMessagingFees(
-        IMessagingFeeInterface.MessagingFee[] memory fees
+        IMessagingFee.MessagingFee[] memory fees
     ) public override authorizedFeeSetter {
         require(fees.length > 0, "Invalid fees data");
         for (uint256 i = 0; i < fees.length; i++) {
             require(fees[i].jobId != 0, "Invalid jobId");
-            if (fees[i].free) {
-                require(fees[i].gasAmount > 0, "Invalid gasAmount");
-            }
             messagingFees[fees[i].jobId] = fees[i];
         }
         emit MessagingFeesChanged(msg.sender, fees);
     }
 
     /**
-     *  @dev See {IMessagingFeeInterface-getMessagingFee}.
+     *  @dev See {IMessagingFee-getMessagingFee}.
      */
     function getMessagingFee(
         bytes32 jobId
@@ -67,13 +64,13 @@ abstract contract MessagingFee is IMessagingFeeInterface {
         public
         view
         override
-        returns (IMessagingFeeInterface.MessagingFee memory)
+        returns (IMessagingFee.MessagingFee memory)
     {
         return messagingFees[jobId];
     }
 
     /**
-     *  @dev See {IMessagingFeeInterface-withdrawFee}.
+     *  @dev See {IMessagingFee-withdrawFee}.
      */
     function withdrawFee(
         address to,

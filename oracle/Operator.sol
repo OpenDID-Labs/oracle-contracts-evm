@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IOperatorInterface.sol";
+import "../interfaces/IOperator.sol";
 
-abstract contract Operator is IOperatorInterface {
+abstract contract Operator is IOperator {
     mapping(address operator => bool authorized) private operators;
 
     /**
-     *  @dev See {IOperatorInterface-setOperator}.
+     *  @dev See {IOperator-setOperator}.
      */
     function setOperator(
         address operator,
@@ -20,7 +20,7 @@ abstract contract Operator is IOperatorInterface {
     }
 
     /**
-     *  @dev See {IOperatorInterface-isAuthorizedOperator}.
+     *  @dev See {IOperator-isAuthorizedOperator}.
      */
     function isAuthorizedOperator(
         address operator
